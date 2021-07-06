@@ -12,18 +12,6 @@ module Errorio
       @errors = []
     end
 
-    # def add(attribute, message, options = {})
-    #   @messages[attribute] ||= []
-    #   @messages[attribute] << message
-    #
-    #   @details[attribute] ||= []
-    #   @details[attribute] << options
-    #
-    #   self[attribute] ||= []
-    #   self[attribute] << message
-    #   self[attribute].uniq!
-    # end
-
     def add(attribute, type = :invalid, **options)
       error = Error.new(@base, attribute, type, **options)
 
@@ -32,24 +20,6 @@ module Errorio
       error
     end
 
-    # # @param [Hash] errors_hash
-    # def add_multiple_errors(errors_hash)
-    #   errors_hash.each do |key, values|
-    #     values.each { |value| add key, value }
-    #   end
-    # end
-
-    # def each
-    #   each_key do |attribute|
-    #     self[attribute].each { |error| yield attribute, error }
-    #   end
-    # end
-
-    # # Returns all the full error messages in an array.
-    # def full_messages
-    #   map { |attribute, message| full_message(attribute, message) }
-    # end
-
     # Returns all error attribute names
     #
     #   person.errors.messages        # => {:name=>["cannot be nil", "must be specified"]}
@@ -57,6 +27,7 @@ module Errorio
     def attribute_names
       @errors.map(&:attribute).uniq.freeze
     end
+    alias keys attribute_names
 
     # Returns a full message for a given attribute.
     # person.errors.full_message(:name, 'is invalid') # => "Name is invalid"
