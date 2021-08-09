@@ -128,7 +128,7 @@ module Errorio
     end
 
     def errorio_collection_types
-      @errorio_collection_types
+      @errorio_collection_types || [:errors]
     end
   end
 
