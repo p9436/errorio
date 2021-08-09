@@ -113,6 +113,11 @@ module Errorio
   def self.included(base)
     base.extend ClassMethods
     base.send :prepend, InstanceMethods
+
+    # Patch for ActiveRecord classes
+    # AR doesn't call `initialize` method for objects that created on data that was fetched from database,
+    # so you cannot override it. You must use `after_initialize` callback to do that.
+    base.after_initialize :errorio_initializer if base.respond_to?(:after_initialize)
   end
 
   # Class-level methods
