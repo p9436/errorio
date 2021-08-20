@@ -12,12 +12,31 @@ module Errorio
       @errors = []
     end
 
-    def add(attribute, type = :invalid, **options)
-      error = Error.new(@base, attribute, type, **options)
+    # Adds a new error to errors collection
+    # 
+    # @param [Symbol] attribute
+    # @param [Symbol] type
+    # @param [Hash] options
+    def add(attribute, type = :invalid, options = {})
+      error = Error.new(@base, attribute, type, options)
 
       @errors.append(error)
 
       error
+    end
+
+    # Copy errors from another errors object
+    # 
+    # @param [Errorio::Errors,ActiveModel::Errors] other
+    def copy(other)
+      other.each do |err|
+        options = err.options
+
+        # ActiveModel::Error object has own way to generate message attribute,
+        options[:message] = err.message if err.is_a?(ActiveModel::Error)
+
+        add err.attribute, err.type, options
+      end
     end
 
     # Returns all error attribute names
