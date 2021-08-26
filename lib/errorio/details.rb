@@ -10,7 +10,7 @@ module Errorio
     #      invited_by: 1823
     #    }
     def self.by_code(code, args = {})
-      msg = I18n.t("errorio.messages.#{code}", args)
+      msg = I18n.t("errorio.messages.#{code}", **args)
       {
         code: code,
         message: msg
