@@ -123,8 +123,14 @@ module Errorio
   # Class-level methods
   module ClassMethods
     def errorionize(*collection_types)
-      raise unless collection_types.is_a?(Array)
-      @errorio_collection_types = collection_types.map(&:to_sym)
+      raise 'InapproriateArguments' unless collection_types.is_a?(Array)
+
+      @errorio_collection_types ||= []
+      collection_types.map(&:to_sym).each do |a|
+        next if @errorio_collection_types.include?(a)
+
+        @errorio_collection_types << a
+      end
     end
 
     def errorio_collection_types
@@ -140,7 +146,7 @@ module Errorio
     end
 
     def errorio_initializer
-      @errorio_repo = {}
+      @errorio_repo ||= {}
       self.class.errorio_collection_types.each do |e|
         init_errors_variable(e)
         if send(e).nil?
@@ -179,7 +185,8 @@ module Errorio
       result = []
 
       @errors.each do |err|
-        err_obj = err.options.merge(key: err.attribute, type: err.type, message: err.message)
+        msg = err.options.key?(:message) ? err.options[:message] : err.message
+        err_obj = err.options.merge(key: err.attribute, type: err.type, message: msg)
         result << err_obj
       end
       result
