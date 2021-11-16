@@ -26,15 +26,18 @@ module Errorio
     end
 
     # Copy errors from another errors object
-    # 
-    # @param [Errorio::Errors,ActiveModel::Errors] other
+    #
+    # @param [Errorio::Errors, ActiveModel::Errors] other
     def copy(other)
       other.each do |err|
         options = err.options
 
         # ActiveModel::Error object has own way to generate message attribute,
-        options[:message] = err.message if err.is_a?(ActiveModel::Error)
+        # try to copy message as the property of `options`
 
+        if err.is_a?(ActiveModel::Error) || err.is_a?(ActiveModel::NestedError) && options[:message].blank?
+          options[:message] = err.message
+        end
         add err.attribute, err.type, options
       end
     end
