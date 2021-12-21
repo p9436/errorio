@@ -105,8 +105,20 @@ module Errorio
     # Error details with code
     #
     # errors.add :base, :invalid, Errorio.by_code(:E0001, user_id: 129)
+    #
     def by_code(*args)
       Details.by_code(*args)
+    end
+
+    # Interpolate error message from i18n
+    #
+    # @param [Symbol] code
+    # @param [Hash{Symbol->Object}] args
+    #
+    # @return [String]
+    #
+    def message(code, args = {})
+      Details.t_msg(code, args)
     end
   end
 
